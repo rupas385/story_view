@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:js';
 import 'dart:math';
 import 'dart:ui';
 
@@ -111,6 +112,8 @@ class StoryItem {
     Key? key,
     BoxFit imageFit = BoxFit.fitWidth,
     String? caption,
+    Color colorLayer = Colors.white,
+    required Size size,
     bool shown = false,
     Map<String, dynamic>? requestHeaders,
     Duration? duration,
@@ -126,6 +129,11 @@ class StoryItem {
               controller: controller,
               fit: imageFit,
               requestHeaders: requestHeaders,
+            ),
+            Container(
+              color: colorLayer,
+              width: size.width,
+              height: size.height,
             ),
             SafeArea(
               child: Align(
@@ -395,6 +403,9 @@ class StoryView extends StatefulWidget {
   /// Where the progress indicator should be placed.
   final ProgressPosition progressPosition;
 
+  ///Offset
+  final double offsetTopIndicators;
+
   /// Should the story be repeated forever?
   final bool repeat;
 
@@ -411,6 +422,7 @@ class StoryView extends StatefulWidget {
     required this.controller,
     this.onComplete,
     this.onStoryShow,
+    this.offsetTopIndicators = 0.0,
     this.progressPosition = ProgressPosition.top,
     this.repeat = false,
     this.inline = false,
@@ -626,27 +638,30 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
       child: Stack(
         children: <Widget>[
           _currentView,
-          Align(
-            alignment: widget.progressPosition == ProgressPosition.top
-                ? Alignment.topCenter
-                : Alignment.bottomCenter,
-            child: SafeArea(
-              bottom: widget.inline ? false : true,
-              // we use SafeArea here for notched and bezeles phones
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: PageBar(
-                  widget.storyItems
-                      .map((it) => PageData(it!.duration, it.shown))
-                      .toList(),
-                  this._currentAnimation,
-                  key: UniqueKey(),
-                  indicatorHeight: widget.inline
-                      ? IndicatorHeight.small
-                      : IndicatorHeight.large,
+          Padding(
+            padding: EdgeInsets.only(top: widget.offsetTopIndicators),
+            child: Align(
+              alignment: widget.progressPosition == ProgressPosition.top
+                  ? Alignment.topCenter
+                  : Alignment.bottomCenter,
+              child: SafeArea(
+                bottom: widget.inline ? false : true,
+                // we use SafeArea here for notched and bezeles phones
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: PageBar(
+                    widget.storyItems
+                        .map((it) => PageData(it!.duration, it.shown))
+                        .toList(),
+                    this._currentAnimation,
+                    key: UniqueKey(),
+                    indicatorHeight: widget.inline
+                        ? IndicatorHeight.small
+                        : IndicatorHeight.large,
+                  ),
                 ),
               ),
             ),
