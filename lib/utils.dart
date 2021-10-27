@@ -14,14 +14,14 @@ class VerticalDragInfo {
     print("===================> DELTA DX: ${primaryDelta.dx} DELTA DY: ${primaryDelta.dy} <=======================");
     if (primaryDelta.dy > 0) {
       tmpDirection = Direction.down;
-    } else {
+    } else if (primaryDelta.dy < 0){
       tmpDirection = Direction.up;
-    }
-
-    if (primaryDelta.dx > 0) {
+    } else if (primaryDelta.dx > 0 ) {
       tmpDirection = Direction.right;
-    } else {
+    } else if (primaryDelta.dx < 0){
       tmpDirection = Direction.left;
+    }else{
+      tmpDirection = Direction.up;
     }
 
     if (direction != null && tmpDirection != direction) {
