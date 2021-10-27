@@ -713,7 +713,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                     verticalDragInfo = VerticalDragInfo();
                   }
 
-                  verticalDragInfo!.update(details.primaryDelta!);
+                  verticalDragInfo!.update(details.delta);
 
                   // TODO: provide callback interface for animation purposes
                 },
@@ -724,7 +724,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                           verticalDragInfo = VerticalDragInfo();
                         }
 
-                        verticalDragInfo!.update(details.primaryDelta!);
+                        verticalDragInfo!.update(details.delta);
 
                         // TODO: provide callback interface for animation purposes
                       },
