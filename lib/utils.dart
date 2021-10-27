@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 
 enum LoadState { loading, success, failure }
 
-enum Direction { up, down, left, right }
+enum Direction { up, down, left, right, none }
 
 class VerticalDragInfo {
   bool cancel = false;
@@ -11,7 +11,6 @@ class VerticalDragInfo {
 
   void update(Offset primaryDelta) {
     Direction tmpDirection;
-    print("===================> DELTA DX: ${primaryDelta.dx} DELTA DY: ${primaryDelta.dy} <=======================");
     if (primaryDelta.dy > 0) {
       tmpDirection = Direction.down;
     } else if (primaryDelta.dy < 0){
@@ -21,7 +20,7 @@ class VerticalDragInfo {
     } else if (primaryDelta.dx < 0){
       tmpDirection = Direction.left;
     }else{
-      tmpDirection = Direction.up;
+      tmpDirection = Direction.none;
     }
 
     if (direction != null && tmpDirection != direction) {
