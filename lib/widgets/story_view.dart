@@ -706,7 +706,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                     : () {
                         widget.controller.play();
                       },
-                onHorizontalDragUpdate: widget.onVerticalSwipeComplete == null
+                onHorizontalDragUpdate: widget.onHorizontalSwipeComplete == null
                     ? null
                     : (details) {
                   if (verticalDragInfo == null) {
@@ -728,14 +728,14 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
 
                         // TODO: provide callback interface for animation purposes
                       },
-                onHorizontalDragEnd: widget.onVerticalSwipeComplete == null
+                onHorizontalDragEnd: widget.onHorizontalSwipeComplete == null
                     ? null
                     : (details) {
                   widget.controller.play();
                   // finish up drag cycle
                   if (!verticalDragInfo!.cancel &&
-                      widget.onVerticalSwipeComplete != null) {
-                    widget.onVerticalSwipeComplete!(
+                      widget.onHorizontalSwipeComplete != null) {
+                    widget.onHorizontalSwipeComplete!(
                         verticalDragInfo!.direction);
                   }
 
