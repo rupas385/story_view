@@ -396,6 +396,8 @@ class StoryView extends StatefulWidget {
   /// provide this callback so as to enable scroll events on the list view.
   final Function(Direction?)? onVerticalSwipeComplete;
 
+  final Function(Direction?)? onHorizontalSwipeComplete;
+
   /// Callback for when a story is currently being shown.
   final ValueChanged<StoryItem>? onStoryShow;
 
@@ -416,17 +418,18 @@ class StoryView extends StatefulWidget {
   // Controls the playback of the stories
   final StoryController controller;
 
-  StoryView({
-    required this.storyItems,
-    required this.controller,
-    this.onComplete,
-    this.onStoryShow,
-    this.offsetTopIndicators = 0.0,
-    this.progressPosition = ProgressPosition.top,
-    this.repeat = false,
-    this.inline = false,
-    this.onVerticalSwipeComplete,
-  })  : assert(storyItems != null && storyItems.length > 0,
+  StoryView(
+      {required this.storyItems,
+      required this.controller,
+      this.onComplete,
+      this.onStoryShow,
+      this.offsetTopIndicators = 0.0,
+      this.progressPosition = ProgressPosition.top,
+      this.repeat = false,
+      this.inline = false,
+      this.onVerticalSwipeComplete,
+      this.onHorizontalSwipeComplete})
+      : assert(storyItems != null && storyItems.length > 0,
             "[storyItems] should not be null or empty"),
         assert(progressPosition != null, "[progressPosition] cannot be null"),
         assert(
@@ -683,9 +686,19 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                     widget.controller.next();
                   }
                 },
+                onHorizontalDragStart: widget.onHorizontalSwipeComplete == null
+                    ? null
+                    : (details) {
+                        widget.controller.pause();
+                      },
                 onVerticalDragStart: widget.onVerticalSwipeComplete == null
                     ? null
                     : (details) {
+                        widget.controller.pause();
+                      },
+                onHorizontalDragCancel: widget.onHorizontalSwipeComplete == null
+                    ? null
+                    : () {
                         widget.controller.pause();
                       },
                 onVerticalDragCancel: widget.onVerticalSwipeComplete == null
@@ -693,6 +706,17 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                     : () {
                         widget.controller.play();
                       },
+                onHorizontalDragUpdate: widget.onVerticalSwipeComplete == null
+                    ? null
+                    : (details) {
+                  if (verticalDragInfo == null) {
+                    verticalDragInfo = VerticalDragInfo();
+                  }
+
+                  verticalDragInfo!.update(details.primaryDelta!);
+
+                  // TODO: provide callback interface for animation purposes
+                },
                 onVerticalDragUpdate: widget.onVerticalSwipeComplete == null
                     ? null
                     : (details) {
@@ -704,6 +728,19 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
 
                         // TODO: provide callback interface for animation purposes
                       },
+                onHorizontalDragEnd: widget.onVerticalSwipeComplete == null
+                    ? null
+                    : (details) {
+                  widget.controller.play();
+                  // finish up drag cycle
+                  if (!verticalDragInfo!.cancel &&
+                      widget.onVerticalSwipeComplete != null) {
+                    widget.onVerticalSwipeComplete!(
+                        verticalDragInfo!.direction);
+                  }
+
+                  verticalDragInfo = null;
+                },
                 onVerticalDragEnd: widget.onVerticalSwipeComplete == null
                     ? null
                     : (details) {

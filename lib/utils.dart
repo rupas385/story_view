@@ -9,7 +9,7 @@ class VerticalDragInfo {
 
   void update(double primaryDelta) {
     Direction tmpDirection;
-
+    print("===================> DELTA: $primaryDelta <=======================");
     if (primaryDelta > 0) {
       tmpDirection = Direction.down;
     } else {
