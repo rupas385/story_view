@@ -396,7 +396,7 @@ class StoryView extends StatefulWidget {
   /// provide this callback so as to enable scroll events on the list view.
   final Function(Direction?)? onVerticalSwipeComplete;
 
-  final Function(Direction?)? onHorizontalSwipeComplete;
+  final Function(Direction?, StoryItem?)? onHorizontalSwipeComplete;
 
   /// Callback for when a story is currently being shown.
   final ValueChanged<StoryItem>? onStoryShow;
@@ -736,7 +736,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                   if (!verticalDragInfo!.cancel &&
                       widget.onHorizontalSwipeComplete != null) {
                     widget.onHorizontalSwipeComplete!(
-                        verticalDragInfo!.direction);
+                        verticalDragInfo!.direction,_currentStory ?? null);
                   }
 
                   verticalDragInfo = null;
